@@ -117,11 +117,11 @@ public class AbsTest extends CSC301TestBase{
 	
 	protected IUser serializeDeserialize(IUser user) throws Exception{
 		try(ByteArrayOutputStream output = new ByteArrayOutputStream()){
-			serializer.serialize(user, output);
+			createSerializer().serialize(user, output);
 			output.flush();
 			
 			try(ByteArrayInputStream  input  = new ByteArrayInputStream(output.toByteArray())){
-				return serializer.deserializeUser(input);
+				return createSerializer().deserializeUser(input);
 			}
 		}
 	}
