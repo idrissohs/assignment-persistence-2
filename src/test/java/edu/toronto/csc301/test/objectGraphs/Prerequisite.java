@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import edu.toronto.csc301.IPost;
 import edu.toronto.csc301.IUser;
+import edu.toronto.csc301.impl.User;
 import edu.toronto.csc301.test.AbsTest;
 
 /**
@@ -35,7 +36,7 @@ public class Prerequisite extends AbsTest{
 
 	@Test
 	public void canSerializeRenderedImageWithoutError() throws Exception{
-		IUser u1 = new DummyUser();
+		IUser u1 = new User();
 		IUser u2 = serializeDeserialize(u1);
 		
 		assertEqualDimensions(u1.getPosts().next().getImage(), 

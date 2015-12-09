@@ -1,48 +1,46 @@
 package edu.toronto.csc301.impl;
 
-
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+
+import com.cedarsoftware.util.io.JsonReader;
+import com.cedarsoftware.util.io.JsonWriter;
+
 import edu.toronto.csc301.ISerializer;
 import edu.toronto.csc301.IUser;
-import com.google.gson.*;
 
+public class Serializer implements ISerializer
+{
+    @Override
+    public void serialize(IUser user, OutputStream output) throws Exception
+    {
+        	if(user == null) throw new NullPointerException();
+        	String object = JsonWriter.objectToJson((User)user);
+            output.write(object.getBytes());
+    }
 
-public class Serializer implements ISerializer {
-
-	public void serialize(IUser user, OutputStream output) throws Exception{
-		if( user == null || output == null){
-			throw new NullPointerException();
-		}
-		Gson gson = new Gson();
-		String js = gson.toJson(user);
-		ObjectOutputStream out = null;
-		try{
-			out = new ObjectOutputStream (output);
-			out.writeObject(js);
-		}catch (IOException e){
-			e.printStackTrace();
-			throw new IOException(e.getMessage());
-		}
-	}
-	public IUser deserializeUser(InputStream input) throws Exception{
-		if(input == null){
-			throw new NullPointerException ();
-		}
-		String js= null;
-		try{
-			ObjectInputStream in = new ObjectInputStream(input);
-			js = (String) in.readObject();
-		}catch (IOException e){
-			e.printStackTrace();
-			throw new IOException (e.getMessage());
-		}
-		Gson gson = new Gson();
-		IUser user = gson.fromJson(js, User.class);
-		return user;
-	}
-	
+    @Override
+    public IUser deserializeUser(InputStream input) throws Exception
+    {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        StringBuilder out = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null)
+        {
+            out.append(line);
+        }
+        try
+        {
+        	Object obj = JsonReader.jsonToJava(out.toString());
+        	User user = (User)obj;
+        	return user;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
